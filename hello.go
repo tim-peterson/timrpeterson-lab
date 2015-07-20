@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/GeertJohan/go.rice"
-
 	"golang.org/x/net/context"
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/datastore"
@@ -23,6 +22,8 @@ var (
 	guestbookTemplate *template.Template
 	aboutTemplate     *template.Template
 	buttonTemplate    *template.Template
+	ideaTemplate    	*template.Template
+	commentsTemplate  *template.Template
 )
 
 func init() {
@@ -31,6 +32,14 @@ func init() {
 	http.HandleFunc("/about", about)
 	http.HandleFunc("/button", button)
 	http.HandleFunc("/buttonClicked", buttonClicked)
+	http.HandleFunc("/idea", idea)
+	http.HandleFunc("/submittedIdea", submittedIdea)
+	http.HandleFunc("/comments", comments)
+
+	http.HandleFunc("/comments.json", handleComments)
+		//http.Handle("/", http.FileServer(http.Dir("./public")))
+	//	log.Println("Server started: http://localhost:" + port)
+		//log.Fatal(http.ListenAndServe(":"+port, nil))
 
 	box = rice.MustFindBox("templates")
 
@@ -41,7 +50,13 @@ func init() {
 	aboutTemplate = template.Must(templateTree.New("about").Parse(box.MustString("about.html.tmpl")))
 
 	buttonTemplate = template.Must(templateTree.New("button").Delims("{[", "]}").Parse(box.MustString("button.html.tmpl")))
+
+	ideaTemplate = template.Must(templateTree.New("idea").Parse(box.MustString("idea.html.tmpl")))
+	commentsTemplate = template.Must(templateTree.New("comments").Parse(box.MustString("comments.html.tmpl")))
+
 }
+
+
 
 // guestbookKey returns the key used for all guestbook entries.
 func guestbookKey(c context.Context) *datastore.Key {
@@ -51,6 +66,9 @@ func guestbookKey(c context.Context) *datastore.Key {
 
 func root(w http.ResponseWriter, r *http.Request) {
 	c := appengine.NewContext(r)
+
+	//http.FileServer(http.Dir("./public"))
+
 	// Ancestor queries, as shown here, are strongly consistent with the High
 	// Replication Datastore. Queries that span entity groups are eventually
 	// consistent. If we omitted the .Ancestor from this query there would be

@@ -1,8 +1,13 @@
 {{template "header"}}
 
-Hi
-
-We've had {{ .Posts }} posts.
+{{range .}}
+  {{with .Author}}
+    <p><b>{{.}}</b> wrote:</p>
+  {{else}}
+    <p>An anonymous person wrote:</p>
+  {{end}}
+  <pre>{{.Content}}</pre>
+{{end}}
 
 
 <div id="content"></div>
