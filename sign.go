@@ -9,7 +9,7 @@ import (
 	"google.golang.org/appengine/user"
 )
 
-func sign(w http.ResponseWriter, r *http.Request) {
+func signPage(w http.ResponseWriter, r *http.Request) {
 	c := appengine.NewContext(r)
 	g := Greeting{
 		Content: r.FormValue("content"),

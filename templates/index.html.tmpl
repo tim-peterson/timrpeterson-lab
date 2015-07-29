@@ -1,17 +1,19 @@
 
-{{template "header"}}
+{{template "header" .}}
 
-    {{range .}}
-      {{with .Author}}
-        <p><b>{{.}}</b> wrote:</p>
-      {{else}}
-        <p>An anonymous person wrote:</p>
-      {{end}}
-      <pre>{{.Content}}</pre>
+    {{with .Data}}
+        {{range .}}
+          {{with .Author}}
+            <p><b>{{.}}</b> wrote:</p>
+          {{else}}
+            <p>An anonymous person wrote:</p>
+          {{end}}
+          <pre>{{.Content}}</pre>
+        {{end}}
+        <form action="/sign" method="post">
+          <div><textarea name="content" rows="3" cols="60"></textarea></div>
+          <div><input type="submit" value="Sign Guestbook"></div>
+        </form>
     {{end}}
-    <form action="/sign" method="post">
-      <div><textarea name="content" rows="3" cols="60"></textarea></div>
-      <div><input type="submit" value="Sign Guestbook"></div>
-    </form>
     
-{{template "footer"}}
+{{template "footer" .}}
