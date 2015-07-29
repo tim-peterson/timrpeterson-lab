@@ -1,29 +1,27 @@
 package guestbook
 
 import (
-  //"encoding/json"
+	//"encoding/json"
 	"net/http"
 	"time"
 
-  "golang.org/x/net/context"
+	"golang.org/x/net/context"
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/datastore"
 	"google.golang.org/appengine/user"
 )
 
-
-func idea(w http.ResponseWriter, r *http.Request) {
+func ideaPage(w http.ResponseWriter, r *http.Request) {
 	if err := ideaTemplate.Execute(w, nil); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
 
 type Idea struct {
-	Author  string
-	Idea string
-	Date    time.Time
+	Author string
+	Idea   string
+	Date   time.Time
 }
-
 
 type ideaData struct {
 	IPAddress string
@@ -37,15 +35,14 @@ func ideaKey(c context.Context) *datastore.Key {
 	return datastore.NewKey(c, "Ideas", "default_ideas", 0, nil)
 }
 
+func submittedIdeaPage(w http.ResponseWriter, r *http.Request) {
 
-func submittedIdea(w http.ResponseWriter, r *http.Request) {
-
-  //w.Header().Set("Access-Control-Allow-Origin", "*")
+	//w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	c := appengine.NewContext(r)
 	i := Idea{
 		Idea: r.FormValue("idea"),
-		Date:    time.Now(),
+		Date: time.Now(),
 	}
 	if u := user.Current(c); u != nil {
 		i.Author = u.String()

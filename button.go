@@ -9,7 +9,7 @@ import (
 	"google.golang.org/appengine/datastore"
 )
 
-func button(w http.ResponseWriter, r *http.Request) {
+func buttonPage(w http.ResponseWriter, r *http.Request) {
 	if err := buttonTemplate.Execute(w, nil); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -27,7 +27,7 @@ func clickKey(c context.Context) *datastore.Key {
 	return datastore.NewKey(c, "Clicks", "default_click", 0, nil)
 }
 
-func buttonClicked(w http.ResponseWriter, r *http.Request) {
+func buttonClickedPage(w http.ResponseWriter, r *http.Request) {
 	click := &clickData{
 		IPAddress: r.RemoteAddr,
 	}
@@ -50,6 +50,8 @@ func buttonClicked(w http.ResponseWriter, r *http.Request) {
 		Clicks: clickCount,
 	}
 
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Cache-Control", "no-cache")
 	err = json.NewEncoder(w).Encode(stats)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

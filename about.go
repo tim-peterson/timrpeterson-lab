@@ -11,17 +11,15 @@ type aboutInfo struct {
 	Posts int
 }
 
-func about(w http.ResponseWriter, r *http.Request) {
+func aboutPage(r *http.Request) interface{} {
 	c := appengine.NewContext(r)
 	count, err := datastore.NewQuery("GuestbookGreeting").Ancestor(guestbookKey(c)).Count(c)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return nil
 	}
 
 	info := &aboutInfo{
 		Posts: count,
 	}
-	if err := aboutTemplate.Execute(w, info); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
+	return info
 }
