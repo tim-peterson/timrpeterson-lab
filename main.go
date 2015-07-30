@@ -53,6 +53,8 @@ func init() {
 	router.HandleFunc("/comments.json", newGenericJSON(handleCommentsGet)).Methods("GET")
 	router.HandleFunc("/user/{id:[0-9]+}", userPage)
 
+	router.HandleFunc("/getUser", newGenericJSON(handleGetUser))
+
 	http.Handle("/", router)
 	//http.Handle("/", http.FileServer(http.Dir("./public")))
 	//	log.Println("Server started: http://localhost:" + port)
